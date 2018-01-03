@@ -1,7 +1,7 @@
 package seqnum_test
 
 import (
-	"github.com/koralski/run-command-extension-linux/pkg/seqnum"
+	"github.com/Azure/run-command-extension-linux/pkg/seqnum"
 	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"os"

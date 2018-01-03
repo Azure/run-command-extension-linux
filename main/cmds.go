@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/Azure/azure-docker-extension/pkg/vmextension"
+	"github.com/Azure/run-command-extension-linux/pkg/seqnum"
 	"github.com/go-kit/kit/log"
-	"github.com/koralski/run-command-extension-linux/pkg/seqnum"
 	"github.com/pkg/errors"
 )
 

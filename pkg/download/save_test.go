@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/Azure/run-command-extension-linux/pkg/download"
 	"github.com/ahmetalpbalkan/go-httpbin"
-	"github.com/koralski/run-command-extension-linux/pkg/download"
 	"github.com/stretchr/testify/require"
 )
 

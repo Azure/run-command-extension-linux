@@ -3,7 +3,7 @@ package blobutil_test
 import (
 	"testing"
 
-	"github.com/koralski/run-command-extension-linux/pkg/blobutil"
+	"github.com/Azure/run-command-extension-linux/pkg/blobutil"
 	"github.com/stretchr/testify/require"
 )
 

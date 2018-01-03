@@ -175,7 +175,7 @@ teardown(){
     # download an external script and run it
     push_settings '{
         "fileUris": [
-                "https://github.com/koralski/run-command-extension-linux/raw/master/integration-test/testdata/script.sh"
+                "https://raw.githubusercontent.com/Azure/run-command-extension-linux/master/integration-test/testdata/script.sh?token=AB_81mfJDTT81qa2w14q3ZgiVNSVvjg5ks5aVqJowA%3D%3D"
         ],
         "commandToExecute":"./script.sh"
         }'

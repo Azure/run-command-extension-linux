@@ -1,5 +1,5 @@
 # Azure RunCommand Extension for Linux (1.0.0) 
-[![Build Status](https://travis-ci.org/koralski/run-command-extension-linux.svg?branch=master)](https://travis-ci.org/koralski/run-command-extension-linux)
+[![Build Status](https://travis-ci.com/Azure/run-command-extension-linux.svg?token=ksGxxYRn7Qpr4tJ2zxqq&branch=master)](https://travis-ci.com/Azure/run-command-extension-linux.svg?token=ksGxxYRn7Qpr4tJ2zxqq)
 
 This documentation is current for version 1.0.0 and above.
 
