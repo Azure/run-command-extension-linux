@@ -173,7 +173,7 @@ func enable(ctx *log.Context, h vmextension.HandlerEnvironment, seqNum int) (str
 	telemetry("Output", "-- stdout/stderr omitted from telemetry pipeline --", isSuccess, 0)
 
 	if isSuccess {
-		ctx.Log("event", "enable script succeeded")
+		ctx.Log("event", "enabled")
 	} else {
 		ctx.Log("event", "enable script failed")
 	}
