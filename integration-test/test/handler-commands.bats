@@ -231,9 +231,9 @@ teardown(){
     [[ "$diff" == *"A /var/lib/waagent/run-command/download/0/$blob2"* ]] # file downloaded
 
     # compare checksum
-    existing=$(md5 -q "$tmp")
+    existing=$(md5sum "$tmp" | cut -d " " -f 1)
     echo "Local file checksum: $existing"
-    got=$(container_read_file "/var/lib/waagent/run-command/download/0/$blob1" | md5 -q)
+    got=$(container_read_file "/var/lib/waagent/run-command/download/0/$blob1" | md5sum | cut -d " " -f 1)
     echo "Downloaded file checksum: $got"
     [[ "$existing" == "$got" ]]
 }
