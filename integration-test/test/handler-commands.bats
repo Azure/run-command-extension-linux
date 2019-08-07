@@ -200,10 +200,10 @@ teardown(){
     cnt="testcontainer"
     blob1="blob1-$RANDOM"
     blob2="blob2 with spaces-$RANDOM"
-    azure storage container show  "$cnt" 1>/dev/null ||
-        azure storage container create "$cnt" 1>/dev/null && echo "Azure Storage container created">&2
-    azure storage blob upload -f "$tmp" "$cnt" "$blob1" 1>/dev/null  # upload blob1
-    azure storage blob upload -f "$tmp" "$cnt" "$blob2" 1>/dev/null # upload blob2
+    az storage container show -n "$cnt" 1>/dev/null ||
+        az storage container create -n "$cnt" 1>/dev/null && echo "Azure Storage container created">&2
+    az storage blob upload -f "$tmp" -c "$cnt" -n "$blob1" 1>/dev/null # upload blob1
+    az storage blob upload -f "$tmp" -c "$cnt" -n "$blob2" 1>/dev/null # upload blob2
 
     blob1_url="http://$AZURE_STORAGE_ACCOUNT.blob.core.windows.net/$cnt/$blob1" # over http
     blob2_url="https://$AZURE_STORAGE_ACCOUNT.blob.core.windows.net/$cnt/$blob2" # over https
