@@ -10,6 +10,20 @@ teardown(){
     rm -rf "$certs_dir"
 }
 
+@test "handler command: enable - same sequence number not stuck in transitioning state" {
+    mk_container sh -c \
+        "fake-waagent install && fake-waagent enable && fake-waagent enable && wait-for-enable"
+    push_settings '{"commandToExecute": "sleep 5"}' ''
+   
+    run start_container
+    echo "$output"
+    enable_count="$(echo "$output" | grep -c 'event=enabled')"
+    echo "Enable count=$enable_count"
+    [ "$enable_count" -eq 1 ]
+    [[ "$output" == *"this script configuration is already processed, will not run again"* ]] # not processed again
+    [[ "$output" == *"transitioning status detected"* ]]
+}
+
 @test "handler command: install - creates the data dir" {
     run in_container fake-waagent install
     echo "$output"
