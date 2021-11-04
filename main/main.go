@@ -23,6 +23,9 @@ var (
 	// incorrect. The correct way is mrseq.  This file is auto-preserved by the agent.
 	mostRecentSequence = "mrseq"
 
+	// Filename where active process keeps track of process id and process start time
+	pidFilePath = "pidstart"
+
 	// downloadDir is where we store the downloaded files in the "{downloadDir}/{seqnum}/file"
 	// format and the logs as "{downloadDir}/{seqnum}/std(out|err)". Stored under dataDir
 	downloadDir = "download"

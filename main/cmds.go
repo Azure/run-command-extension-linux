@@ -130,13 +130,17 @@ func enablePre(ctx *log.Context, hEnv HandlerEnvironment, seqNum int) error {
 		return errors.Wrap(err, "failed to process seqnum")
 	} else if shouldExit {
 		ctx.Log("event", "exit", "message", "this script configuration is already processed, will not run again")
-		statusType, err := readStatus(ctx, hEnv, seqNum)
-		if err == nil && statusType == StatusTransitioning {
-			// Make sure status is not stuck in transitioning state
-			// If VM was restarted or process didn't finish its possible that seqNum ihas been marked as processed
-			// but last status file is still is "transitioning"
-			ctx.Log("event", "check status", "message", "transitioning status detected - set to error status")
-			reportStatus(ctx, hEnv, seqNum, StatusError, cmd{enable, "Enable", true, enablePre, 3}, "Last script execution didn't finish.")
+		if IsExtensionStillRunning(pidFilePath) {
+			ctx.Log("event", "check status", "message", "Previous runcommand process is still running")
+		} else {
+			statusType, err := readStatus(ctx, hEnv, seqNum)
+			if err == nil && statusType == StatusTransitioning {
+				// Make sure status is not stuck in transitioning state when previous extension process is not running
+				// If VM was restarted or process didn't finish its possible that seqNum ihas been marked as processed
+				// but last status file is still is "transitioning"
+				ctx.Log("event", "check status", "message", "transitioning status detected but no process to handle it - set to success status")
+				reportStatus(ctx, hEnv, seqNum, StatusSuccess, cmd{enable, "Enable", true, enablePre, 3}, "Last script execution didn't finish.")
+			}
 		}
 		os.Exit(0)
 	}
@@ -277,6 +281,11 @@ func runCmd(ctx log.Logger, dir string, cfg handlerSettings) (err error) {
 		}
 		scenario = fmt.Sprintf("protected-script;%s", scenarioInfo)
 	}
+
+	// Store the active process id and start time in case second instance was started by the agent
+	// If process exited successfully the pid file is deleted
+	SaveCurrentPidAndStartTime(pidFilePath)
+	defer DeleteCurrentPidAndStartTime(pidFilePath)
 
 	begin := time.Now()
 	err = ExecCmdInDir(cmd, dir)

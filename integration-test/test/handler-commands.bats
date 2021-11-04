@@ -21,7 +21,7 @@ teardown(){
     echo "Enable count=$enable_count"
     [ "$enable_count" -eq 1 ]
     [[ "$output" == *"this script configuration is already processed, will not run again"* ]] # not processed again
-    [[ "$output" == *"transitioning status detected"* ]]
+    [[ "$output" == *"Previous runcommand process is still running"* ]]
 }
 
 @test "handler command: install - creates the data dir" {
