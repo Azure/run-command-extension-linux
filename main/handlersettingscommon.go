@@ -140,3 +140,14 @@ func unmarshalProtectedSettings(configFolder string, hs handlerSettingsCommon, v
 	}
 	return nil
 }
+
+func cleanUpSettings(configFolder string) error {
+
+	settingFile, err := settingsPath(configFolder)
+	clear := []byte("")
+	if err != nil {
+		err = ioutil.WriteFile(settingFile, clear, 0644)
+	}
+
+	return err
+}

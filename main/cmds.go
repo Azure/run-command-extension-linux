@@ -189,6 +189,13 @@ func enable(ctx *log.Context, h HandlerEnvironment, seqNum int) (string, error) 
 		ctx.Log("event", "enable script failed")
 	}
 
+	err = cleanUpSettings(h.HandlerEnvironment.ConfigFolder)
+	if err != nil {
+		ctx.Log("message", "error clearing config folder")
+	} else {
+		ctx.Log("message", "config folder cleared successfully")
+	}
+
 	msg := fmt.Sprintf("\n[stdout]\n%s\n[stderr]\n%s", string(stdoutTail), string(stderrTail))
 	// Always report nil for error because extension should not fail if script throws error
 	// Error still will be reported in the message
