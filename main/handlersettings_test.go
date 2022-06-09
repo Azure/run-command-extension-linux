@@ -1,7 +1,14 @@
 package main
 
-import "testing"
-import "github.com/stretchr/testify/require"
+import (
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"strconv"
+	"testing"
+
+	"github.com/stretchr/testify/require"
+)
 
 func Test_handlerSettingsValidate(t *testing.T) {
 	// commandToExecute not specified
@@ -97,4 +104,45 @@ func Test_toJSON(t *testing.T) {
 		"a": 3})
 	require.Nil(t, err)
 	require.Equal(t, `{"a":3}`, s)
+}
+
+func Test_protectedSettingsTest(t *testing.T) {
+	//set up test direcotry + test files
+	testFolderPath := "/config"
+	settingsExtensionName := ".settings"
+
+	err := createTestFiles(testFolderPath, settingsExtensionName)
+	require.NoError(t, err)
+
+	err = cleanUpSettings(testFolderPath)
+	require.NoError(t, err)
+
+	fileName := ""
+	for i := 0; i < 3; i++ {
+		fileName = filepath.Join(testFolderPath, strconv.FormatInt(int64(i), 10)+settingsExtensionName)
+		content, err := ioutil.ReadFile(fileName)
+		require.NoError(t, err)
+		require.Equal(t, len(content), 0)
+	}
+
+	// cleanup
+	defer os.RemoveAll(testFolderPath)
+}
+
+func createTestFiles(folderPath, settingsExtensionName string) error {
+	fileName := ""
+	//create test directories
+	testContent := []byte("beep boop")
+	for i := 0; i < 3; i++ {
+		fileName = filepath.Join(folderPath, strconv.FormatInt(int64(i), 10)+settingsExtensionName)
+		file, err := os.Create(fileName)
+		if err != nil {
+			return err
+		}
+		size, err := file.Write(testContent)
+		if err != nil || size == 0 {
+			return err
+		}
+	}
+	return nil
 }
