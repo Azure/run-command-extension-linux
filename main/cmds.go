@@ -140,6 +140,13 @@ func enablePre(ctx *log.Context, hEnv HandlerEnvironment, seqNum int) error {
 				// but last status file is still is "transitioning"
 				ctx.Log("event", "check status", "message", "transitioning status detected but no process to handle it - set to success status")
 				reportStatus(ctx, hEnv, seqNum, StatusSuccess, cmd{enable, "Enable", true, enablePre, 3}, "Last script execution didn't finish.")
+			} else { //agent restarts but execution is done and not transitioning
+				err = cleanUpSettings(hEnv.HandlerEnvironment.ConfigFolder)
+				if err != nil {
+					ctx.Log("message", "error clearing config folder")
+				} else {
+					ctx.Log("message", "config folder cleared successfully")
+				}
 			}
 		}
 		os.Exit(0)
@@ -187,6 +194,13 @@ func enable(ctx *log.Context, h HandlerEnvironment, seqNum int) (string, error) 
 		ctx.Log("event", "enabled")
 	} else {
 		ctx.Log("event", "enable script failed")
+	}
+
+	err = cleanUpSettings(h.HandlerEnvironment.ConfigFolder)
+	if err != nil {
+		ctx.Log("message", "error clearing config folder")
+	} else {
+		ctx.Log("message", "config folder cleared successfully")
 	}
 
 	msg := fmt.Sprintf("\n[stdout]\n%s\n[stderr]\n%s", string(stdoutTail), string(stderrTail))
