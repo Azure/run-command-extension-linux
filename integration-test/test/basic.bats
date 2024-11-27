@@ -9,7 +9,7 @@ load test_helper
 }
 
 @test "meta: azure cli is installed" {
-    run azure -v
+    run az -v
     echo "$output">&2
     [ "$status" -eq 0 ]
 }
