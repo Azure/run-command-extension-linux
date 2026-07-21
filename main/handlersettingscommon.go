@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"github.com/pkg/errors"
 )
@@ -126,31 +127,45 @@ func unmarshalProtectedSettings(configFolder string, hs handlerSettingsCommon, v
 	// other extension handlers depend on this package for parsing handler
 	// settings.
 
-	//using cms command to support for FIPS 140-3
-	cmd := exec.Command("openssl", "cms", "-inform", "DER", "-decrypt", "-recip", crt, "-inkey", prv)
-	var bOut, bErr bytes.Buffer
-	var errMsg error
-	cmd.Stdin = bytes.NewReader(decoded)
-	cmd.Stdout = &bOut
-	cmd.Stderr = &bErr
-
-	//back up smime command in case cms fails
-	if err := cmd.Run(); err != nil {
-		errMsg = fmt.Errorf("decrypting protected settings with cms command failed: error=%v stderr=%s \n now decrypting with smime command", err, bErr.String())
-		cmd = exec.Command("openssl", "smime", "-inform", "DER", "-decrypt", "-recip", crt, "-inkey", prv)
-		cmd.Stdin = bytes.NewReader(decoded)
-		bOut.Reset()
-		bErr.Reset()
-		cmd.Stdout = &bOut
-		cmd.Stderr = &bErr
-		if err := cmd.Run(); err != nil {
-			return errors.Wrapf(errMsg, "decrypting protected settings with smime command failed: error=%v stderr=%s", err, bErr.String())
-		}
+	decrypted, err := tryDecryptWithCert(decoded, crt, prv)
+	if err != nil {
+		return fmt.Errorf("failed to decrypt protected settings: %v", err)
 	}
 
-	// decrypted: json object for protected settings
-	if err := json.Unmarshal(bOut.Bytes(), &v); err != nil {
+	if err := json.Unmarshal(decrypted, &v); err != nil {
 		return fmt.Errorf("failed to unmarshal decrypted settings json: %v", err)
 	}
 	return nil
+}
+
+// tryDecryptWithCert attempts to decrypt the given DER-encoded data using the
+// provided certificate and private key. It tries multiple openssl command
+// variations to handle different OpenSSL versions (1.x vs 3.x) and configurations.
+func tryDecryptWithCert(decoded []byte, crt, prv string) ([]byte, error) {
+	type attempt struct {
+		name string
+		args []string
+	}
+
+	attempts := []attempt{
+		{"cms", []string{"cms", "-inform", "DER", "-decrypt", "-recip", crt, "-inkey", prv}},
+		{"cms+legacy", []string{"cms", "-inform", "DER", "-decrypt", "-recip", crt, "-inkey", prv, "-provider", "legacy", "-provider", "default"}},
+		{"smime", []string{"smime", "-inform", "DER", "-decrypt", "-recip", crt, "-inkey", prv}},
+	}
+
+	var allErrors []string
+	for _, a := range attempts {
+		var bOut, bErr bytes.Buffer
+		cmd := exec.Command("openssl", a.args...)
+		cmd.Stdin = bytes.NewReader(decoded)
+		cmd.Stdout = &bOut
+		cmd.Stderr = &bErr
+		if err := cmd.Run(); err != nil {
+			allErrors = append(allErrors, fmt.Sprintf("%s: error=%v stderr=%s", a.name, err, bErr.String()))
+			continue
+		}
+		return bOut.Bytes(), nil
+	}
+
+	return nil, fmt.Errorf("%s", strings.Join(allErrors, "; "))
 }
