@@ -44,8 +44,8 @@ github.com/xeipuuv/gojsonreference
 # github.com/xeipuuv/gojsonschema v0.0.0-20160623135812-c539bca196be
 ## explicit
 github.com/xeipuuv/gojsonschema
-# golang.org/x/text v0.0.0-20160702143019-ce78b075c2fb
-## explicit
+# golang.org/x/text v0.3.8
+## explicit; go 1.17
 golang.org/x/text/encoding
 golang.org/x/text/encoding/internal
 golang.org/x/text/encoding/internal/identifier
@@ -54,4 +54,4 @@ golang.org/x/text/internal/utf8internal
 golang.org/x/text/runes
 golang.org/x/text/transform
 # gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c
-## explicit
+## explicit; go 1.11
