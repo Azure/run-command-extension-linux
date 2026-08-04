@@ -9,7 +9,7 @@ require (
 	github.com/pkg/errors v0.7.1-0.20160627222352-a2d6902c6d2a
 	github.com/stretchr/testify v1.1.4-0.20160615092844-d77da356e56a
 	github.com/xeipuuv/gojsonschema v0.0.0-20160623135812-c539bca196be
-	golang.org/x/text v0.0.0-20160702143019-ce78b075c2fb
+	golang.org/x/text v0.3.8
 )
 
 require (
