@@ -2,6 +2,7 @@
 run-command-extension-linux
 /bin
 /bundle
+/TestScripts/__pycache__/
 
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
 *.o
