@@ -9,5 +9,8 @@ automation tasks. RunCommand can run an inline script you specify or
 download a script file from the Internet or Azure Storage.
 The extension is intended to be used internally and should not be directly deployed by the clients.
 
+For local build and disposable Azure VM validation, see the
+[action RunCommand test harness](TestScripts/README.md).
+
 -----
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
