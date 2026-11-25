@@ -184,7 +184,12 @@ def handler_tests(directory, report, selectors):
         handler = root / "handler"
         (handler / "bin").mkdir(parents=True)
         for name in ("config", "status", "logs"):
-            (handler / name).mkdir()
+            if name == "config":
+                (handler / name).mkdir()
+            else:
+                destination = LOG_DIRECTORY / ("handler-fixture-" + name)
+                destination.mkdir(parents=True, exist_ok=True)
+                (handler / name).symlink_to(destination, target_is_directory=True)
         shutil.copy2(directory / "bin/run-command-extension", handler / "bin/run-command-extension")
         binary = handler / "bin/run-command-extension"
         isolated_agent = root / "agent"
